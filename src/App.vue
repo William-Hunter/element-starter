@@ -7,10 +7,10 @@
         </el-header>
         <el-main>
           <el-row>
-            <el-col :span="20" :offset="4">
+            <el-col :span="20" :offset="2">
               <el-row>
-                <el-button type="primary" @click="showNewWindow()" >新增股票</el-button>
-                <el-button type="success" @click="getList()" icon="el-icon-check" circle></el-button>
+                <el-button type="primary" @click="showNewWindow()" icon="el-icon-plus" >新增股票</el-button>
+                <el-button type="success" @click="getList()" icon="el-icon-refresh-left" circle>刷新列表</el-button>
               </el-row>
               <el-row>
                 <div class="grid-content bg-purple-light">
@@ -22,6 +22,8 @@
                       <el-table-column prop="extremly_low" fixed label="最低价" width="120"></el-table-column>
                       <el-table-column fixed="right" label="操作" width="300">
                         <template slot-scope="scope">
+                          <el-button @click="handleCalcClick(scope.row)" type="primary" icon="el-icon-data-line"
+                            circle></el-button>
                           <el-button @click="handleEditClick(scope.row)" type="primary" icon="el-icon-edit"
                             circle></el-button>
                           <el-button @click="handleRemoveClick(scope.row)" type="danger" icon="el-icon-delete"
@@ -56,6 +58,7 @@
               <el-button @click="closeWindow()">取 消</el-button>
             </div>
           </el-dialog>
+          
         </el-main>
         <el-footer></el-footer>
       </el-container>
@@ -81,6 +84,35 @@ export default {
     this.getList()
   },
   methods: {
+    showCalcResult(data){
+      let _this = this
+      _this.$alert(data, '计算结果', {
+            confirmButtonText: '关闭',
+            dangerouslyUseHTMLString: true
+          });
+    },
+    handleCalcClick(row){
+      let _this = this
+      if("logs" in row){
+        console.log("包含logs")
+        _this.showCalcResult(row.logs)
+      }else{
+        axios
+        .post(_this.baseURL + '/stocks/calc/'+row.stock_id)
+        .then(function (response) {
+          console.log("response", response)
+          if (200 == response.data.code) {
+            var htmlCode=""
+            for (const ele of response.data.data) {
+              htmlCode=htmlCode+ele+"<br>"
+            }
+            row.logs=htmlCode
+            console.log("row1", row)
+            _this.showCalcResult(row.logs)
+          }
+        })
+      }
+    },
     resetForm() {
       let _this = this
       _this.form = {
@@ -116,9 +148,6 @@ export default {
           }
         })
     },
-    deleteStock() {
-      let _this = this
-    },
     showNewWindow() {
       let _this = this
       _this.resetForm()
@@ -137,6 +166,15 @@ export default {
     },
     handleRemoveClick(row) {
       let _this = this
+      axios
+        .post(_this.baseURL + '/stocks/remove/'+row.stock_id)
+        .then(function (response) {
+          console.log("response", response)
+          if (200 == response.data.code) {
+            console.log(_this.tableData)
+            _this.getList()
+          }
+        })
     },
 
   },
