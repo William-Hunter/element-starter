@@ -10,6 +10,7 @@
             <el-col :span="20" :offset="4">
               <el-row>
                 <el-button type="primary" @click="showNewWindow()" >新增股票</el-button>
+                <el-button type="success" @click="getList()" icon="el-icon-check" circle></el-button>
               </el-row>
               <el-row>
                 <div class="grid-content bg-purple-light">
