@@ -74,7 +74,7 @@ export default {
   data() {
     return {
       info: null,
-      baseURL: 'http://172.18.0.40/trade_api',
+      baseURL: window.location.origin+'/trade_api',
       tableData: [],
       dialogVisible: false,
       form: {},
