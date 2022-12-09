@@ -4,10 +4,11 @@
   "author": "yi.shyang@ele.me",
   "private": true,
   "scripts": {
-    "dev": "webpack-dev-server --inline --hot --env.dev",
+    "dev": "webpack-dev-server --inline --hot --env.dev --host 0.0.0.0",
     "build": "rimraf dist && webpack -p --progress --hide-modules"
   },
   "dependencies": {
+    "axios": "^1.2.1",
     "element-ui": "^2.3.4",
     "vue": "^2.5.16"
   },
